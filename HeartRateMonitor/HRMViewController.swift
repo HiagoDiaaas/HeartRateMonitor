@@ -88,13 +88,39 @@ extension HRMViewController: CBPeripheralDelegate {
         for characteristic in characteristics {
             print(characteristic)
             if characteristic.properties.contains(.read) {
-                print("\(characteristic.uuid): properties contains .read")
+                //print("\(characteristic.uuid): properties contains .read")
             }
             if characteristic.properties.contains(.notify) {
-                print("\(characteristic.uuid): properties contains .notify")
+              print("\(characteristic.uuid): properties contains .notify")
+              peripheral.setNotifyValue(true, for: characteristic)
             }
         }
     }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+      switch characteristic.uuid {
+      case heartRateMeasurementCharacteristicCBUUID:
+        let bpm = heartRate(from: characteristic)
+        onHeartRateReceived(bpm)
+      default:
+        print("Unhandled Characteristic UUID: \(characteristic.uuid)")
+      }
+    }
+    
+    private func heartRate(from characteristic: CBCharacteristic) -> Int {
+      guard let characteristicData = characteristic.value else { return -1 }
+      let byteArray = [UInt8](characteristicData)
+
+      let firstBitValue = byteArray[0] & 0x01
+      if firstBitValue == 0 {
+        // Heart Rate Value Format is in the 2nd byte
+        return Int(byteArray[1])
+      } else {
+        // Heart Rate Value Format is in the 2nd and 3rd bytes
+        return (Int(byteArray[1]) << 8) + Int(byteArray[2])
+      }
+    }
+
     
 }
 
