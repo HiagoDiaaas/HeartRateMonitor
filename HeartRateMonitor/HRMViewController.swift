@@ -10,12 +10,12 @@ import UIKit
 
 let heartRateServiceCBUUID = CBUUID(string: "0x180D")
 let heartRateMeasurementCharacteristicCBUUID = CBUUID(string: "2A37")
-let bodySensorLocationCharacteristicCBUUID = CBUUID(string: "2A38")
+
 
 class HRMViewController: UIViewController {
 
   @IBOutlet weak var heartRateLabel: UILabel!
-  @IBOutlet weak var bodySensorLocationLabel: UILabel!
+  
     
   var centralManager: CBCentralManager!
   var heartRatePeripheral: CBPeripheral!
@@ -58,7 +58,7 @@ extension HRMViewController: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        print(peripheral)
+        //print(peripheral)
         heartRatePeripheral = peripheral
         heartRatePeripheral.delegate = self
         centralManager.stopScan()
@@ -86,12 +86,10 @@ extension HRMViewController: CBPeripheralDelegate {
         guard let characteristics = service.characteristics else { return }
         
         for characteristic in characteristics {
-            print(characteristic)
-            if characteristic.properties.contains(.read) {
-                //print("\(characteristic.uuid): properties contains .read")
-            }
+            //print(characteristic)
+            
             if characteristic.properties.contains(.notify) {
-              print("\(characteristic.uuid): properties contains .notify")
+              //print("\(characteristic.uuid): properties contains .notify")
               peripheral.setNotifyValue(true, for: characteristic)
             }
         }
