@@ -59,6 +59,7 @@ extension HRMViewController: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         //print(peripheral)
+        //print(RSSI)
         heartRatePeripheral = peripheral
         heartRatePeripheral.delegate = self
         centralManager.stopScan()
@@ -89,7 +90,7 @@ extension HRMViewController: CBPeripheralDelegate {
             //print(characteristic)
             
             if characteristic.properties.contains(.notify) {
-              //print("\(characteristic.uuid): properties contains .notify")
+              print("\(characteristic.uuid): properties contains .notify")
               peripheral.setNotifyValue(true, for: characteristic)
             }
         }
